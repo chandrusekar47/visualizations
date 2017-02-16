@@ -88,13 +88,6 @@ $(function () {
 			.text(title)
 			.style("text-anchor", "middle")
 	}
-	function throttle(event_handler, delay) {
-		var timeout_id = 0;
-		return (...args) => {
-			clearTimeout(timeout_id)
-			timeout_id = setTimeout(() => event_handler.apply(window, args), delay)
-		}
-	}
 
 	var margins = {top: 20, right: 30, bottom: 80, left: 80}
 	var graph_width = 1440
@@ -136,28 +129,28 @@ $(function () {
 			.data(d3.zip(team_ids, locations_of_team_ids))
 			.enter()
 			.append("text")
-				.attr("class", (d) => d[0] + " team-id")
-				.attr("y", (d) => d[1].y)
-				.attr("x", (d) => d[1].x)
-				.text((d) => d[0])
-				.on("mouseover", (d) => change_team_state(d[0], true))
-				.on("mouseout", (d) => change_team_state(d[0], false))
+				.attr("class", ([team_id, ]) => team_id + " team-id")
+				.attr("y", ([,{y}]) => y)
+				.attr("x", ([,{x}]) => x)
+				.text(([team_id,]) => team_id)
+				.on("mouseover", ([team_id, ]) => change_team_state(team_id, true))
+				.on("mouseout", ([team_id, ]) => change_team_state(team_id, false))
 		
 		chart.selectAll("path.first-link")
 			.data(d3.zip(team_ids, locations_of_team_ids, first_column_points))
 			.enter()
 			.append("path")
-				.attr("d", (d) => team_id_first_point_link_generator([d[1], d[2]]))
-				.attr("class", (d) => d[0] + " first-link")
+				.attr("d", ([,label_xys, first_column_xys]) => team_id_first_point_link_generator([label_xys, first_column_xys]))
+				.attr("class", ([team_id, ]) => team_id + " first-link")
 
 		chart.selectAll("text.team-name")
 			.data(d3.zip(team_ids, team_names))
 			.enter()
 			.append("text")
-				.attr("class", (d) => d[0] + " team-name")
+				.attr("class", ([team_id,]) => team_id + " team-name")
 				.attr("x", graph_width/2)
 				.attr("y", margins.top*2)
-				.text((d) => d[1])
+				.text(([,team_name]) => team_name)
 
 		chart.append("g")
 			.call(x_axis)
@@ -174,9 +167,9 @@ $(function () {
 			.enter()
 			.append("path")
 				.attr("d", (d) => point_to_point_link_generator(d))
-				.attr("class", (d) => d[0].id + " links")
-				.on("mouseover", (d) => change_team_state(d[0].id, true))
-				.on("mouseout", (d) => change_team_state(d[0].id, false))
+				.attr("class", ([{id:team_id}, ]) => team_id + " links")
+				.on("mouseover", ([{id:team_id}, ]) => change_team_state(team_id, true))
+				.on("mouseout", ([{id:team_id}, ]) => change_team_state(team_id, false))
 
 		
 		chart
@@ -187,8 +180,8 @@ $(function () {
 				.attr("cx", x_axis_value_mapper)
 				.attr("cy", y_axis_value_mapper)
 				.attr("class", (d) => d.id + " point" + (d.is_world_series_winner === 'Y' ? " ws-winner": ""))
-				.on("mouseover", (d) => change_team_state(d.id, true))
-				.on("mouseout", (d) => change_team_state(d.id, false))
+				.on("mouseover", ({id:team_id}) => change_team_state(team_id, true))
+				.on("mouseout", ({id:team_id}) => change_team_state(team_id, false))
 			.call(activate_winners)
 	})
 });
