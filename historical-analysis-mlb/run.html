@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title></title>
+        <title>Historical Data Analysis</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet">
@@ -13,8 +13,25 @@
         <!--[if lt IE 8]>
             <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
+        <div class="buttons-holder">
+            <div class="data-choice">
+                <input type="radio" value="batting_avg" name="attribute" checked /> Batting average
+                <input type="radio" value="era" name="attribute" /> Earned run average
+                <input type="radio" value="wins" name="attribute" /> Wins
+                <input type="radio" value="attendance" name="attribute" /> Home field attendance
+                <input type="radio" value="avg_salary" name="attribute" /> Average salary
+            </div>
+            <div class="scale-choice">
+                <input type="radio" name="scale" value="" checked /> Absolute value
+                <input type="radio" name="scale" value="z_" /> Z-score
+            </div>
+        </div>
+
 		<script  src="https://code.jquery.com/jquery-3.1.1.js"></script>
         <script src="https://d3js.org/d3.v4.js"></script>
-        <script type="text/javascript" src="script.js"></script>
+        <script type="text/javascript" src="data.js"></script>
+        <script type="text/javascript" src="util.js"></script>
+        <script type="text/javascript" src="chart.js"></script>
+        <script type="text/javascript" src="main.js"></script>
     </body>
 </html>

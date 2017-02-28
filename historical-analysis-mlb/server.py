@@ -3,6 +3,7 @@ import numpy as np
 import SimpleHTTPServer
 import SocketServer
 import json
+from scipy import stats
 
 PORT = 8000
 
@@ -80,8 +81,24 @@ for franchise_id in franchise_ids:
 			"attendance": float(team["attendance"]), 
 			"avg_salary": float(round(average(players_in_team, "salary"), 2)),
 			"batting_avg": float(round(average(map(batting_average, players_in_team)), 3)), 
-			"ERA": float(round(average(pitchers_in_team, "ERA"), 3))
+			"era": float(round(average(pitchers_in_team, "ERA"), 3))
 		})
+
+grouped_by_year = group_by(flat_franchise_year, "year")
+for year, records in grouped_by_year.iteritems():
+	z_scores_salary = np.round(stats.zscore(pluck("avg_salary", records)), 2)
+	z_scores_wins = np.round(stats.zscore(pluck("wins", records)), 2)
+	z_scores_batting_avg = np.round(stats.zscore(pluck("batting_avg", records)), 2)
+	z_scores_losses = np.round(stats.zscore(pluck("losses", records)), 2)
+	z_scores_attendance = np.round(stats.zscore(pluck("attendance", records)), 2)
+	z_scores_era = np.round(stats.zscore(pluck("era", records)), 2)
+	for i,record in enumerate(records):
+		record["z_avg_salary"] = z_scores_salary[i]
+		record["z_wins"] = z_scores_wins[i]
+		record["z_batting_avg"] = z_scores_batting_avg[i]
+		record["z_losses"] = z_scores_losses[i]
+		record["z_attendance"] = z_scores_attendance[i]
+		record["z_era"] = z_scores_era[i]
 
 target_file = open("summary.json", "w")
 target_file.truncate()
