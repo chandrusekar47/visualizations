@@ -1,17 +1,17 @@
 $(() => {
-	var attr = (title, ylab, property_name, unit = "",formatter = (x)=>x) => {return {title, ylab, property_name, unit, formatter}}
-	var million_formatter = (x) => Math.round(x/10^6, 2)
+	var attr = (title, ylab, property_name, unit = "",formatter = (x)=> +(x).toFixed(3), draw_zero_line = false, zero_line_label = "Average") => {return {title, ylab, property_name, unit, formatter, draw_zero_line, zero_line_label}}
+	var million_formatter = (x) => (x /(Math.pow(10,6))).toFixed(2)
 	var y_axis_attributes = {
 		"batting_avg": attr("Batting average for teams from  2000-2015", "Batting average", "batting_avg"),
 		"era": attr("Earned run average for teams from 2000-2015", "Earned run average", "era"),
 		"wins": attr("Number of wins for teams from 2000-2015", "Number of wins", "wins"),
 		"attendance": attr("Home attendance of teams from 2000-2015", "Home attendance", "attendance", "million", million_formatter),
 		"avg_salary": attr("Average salary of teams from 2000-2015", "Avg. Salary", "avg_salary", "million USD", million_formatter),
-		"z_batting_avg": attr("Batting average for teams from  2000-2015", "Normalized Batting average", "z_batting_avg"),
-		"z_era": attr("Earned run average for teams from 2000-2015", "Normalized Earned run average", "z_era"),
-		"z_wins": attr("Number of wins for teams from 2000-2015", "Normalized Number of wins", "z_wins"),
-		"z_attendance": attr("Home attendance of teams from 2000-2015", "Normalized Home attendance", "z_attendance"),
-		"z_avg_salary": attr("Average salary of teams from 2000-2015", "Normalized Avg. Salary", "z_avg_salary")
+		"z_batting_avg": attr("Batting average for teams from  2000-2015", "Normalized Batting average", "z_batting_avg", undefined, undefined, true),
+		"z_era": attr("Earned run average for teams from 2000-2015", "Normalized Earned run average", "z_era", undefined, undefined, true),
+		"z_wins": attr("Number of wins for teams from 2000-2015", "Normalized Number of wins", "z_wins", undefined, undefined, true),
+		"z_attendance": attr("Home attendance of teams from 2000-2015", "Normalized Home attendance", "z_attendance", undefined, undefined, true),
+		"z_avg_salary": attr("Average salary of teams from 2000-2015", "Normalized Avg. Salary", "z_avg_salary", undefined, undefined, true)
 	}
 	var current_attribute = "batting_avg"
 	var property_name = current_attribute
@@ -34,7 +34,7 @@ $(() => {
 
 	Data.fetch((data) => {
 		window.all_data = data
-		chart = Chart.create(data)
+		chart = Chart.create(data, y_axis_attributes[property_name])
 		chart.render(y_axis_attributes[property_name])
 	})
 });

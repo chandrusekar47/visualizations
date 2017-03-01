@@ -37,15 +37,14 @@ function create_chart (width, height, margins) {
 		.append("svg")
 			.attr("width", width + margins.left+ margins.right)
 			.attr("height", height + margins.top+ margins.bottom)
-			.attr("class", "graph")
 		.append("g")
 			.attr("class", "grid-area")
 			.attr("transform", "translate("+margins.left+", "+margins.top+")")
 	chart.append('text')
-			.attr("x", width/2)
-			.attr("y", margins.top)
+			.attr("x", width/3.5)
+			.attr("y", 0)
 			.attr("class", "title")
-			.style("text-anchor", "middle")
+			.style("text-anchor", "start")
 	chart.append("text")
 			.attr("transform", "translate("+(width/2)+", " + (height + margins.bottom/2) + ")")
 			.attr("class", "label x-axis")
@@ -54,9 +53,50 @@ function create_chart (width, height, margins) {
 			.attr("transform", "rotate(-90)")
 			.attr("class", "label y-axis")
 			.attr("x", -height/2)
-			.attr("y", -margins.left/2)
+			.attr("y", -margins.left/1.5)
 			.style("text-anchor", "middle")
+	chart.append("text")
+			.attr("transform", "rotate(-90)")
+			.attr("class", "unit y-axis")
+			.attr("x", -height/2)
+			.attr("y", -margins.left/2.5)
+			.style("text-anchor", "middle")
+	chart.append("text")
+			.attr("class", "average-text hidden")
+			.attr("x", 0)
+			.attr("y", 0)
+			.style("text-anchor", "start")
+	var legend_width = 230, legend_height = 30
+	var legend_tl_x = width - legend_width
+	var legend_tl_y = 0
+	var padding = 20
+	var circle_radius = 10
+
+	var legend_box = chart.append("g")
+			.attr("class","legend")
+
+	legend_box
+			.append("rect")
+				.attr("width", legend_width)
+				.attr("height", legend_height)
+				.attr("x", legend_tl_x)
+				.attr("y", legend_tl_y)
+	legend_box
+			.append("circle")
+				.attr('cx', legend_tl_x + padding)
+				.attr('cy', legend_height/2)
+				.attr('r', circle_radius)
+				.attr("class", "legend-point ws-winner")
+	legend_box
+			.append("text")
+			.attr("x", legend_tl_x + padding + circle_radius + padding/3)
+			.attr("y", legend_height/2 + 5)
+			.text("- World series winner")
 	return chart
 }
 
 function point(x,y) {return {x,y}}
+
+function get_current_location(element) {
+	return d3.transform(element.attr("transform")).translate
+}

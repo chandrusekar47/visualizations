@@ -1,6 +1,6 @@
 window.Chart = (() => {
-	return function(all_data, width, height, margins) {
-		this.margins = margins || {top: 20, right: 30, bottom: 80, left: 80};
+	return function(all_data, attr, width, height, margins) {
+		this.margins = margins || {top: 50, right: 30, bottom: 100, left: 120};
 		this.graph_width = width || 1280
 		this.graph_height = height || 800
 		this.data = all_data
@@ -11,6 +11,9 @@ window.Chart = (() => {
 		this.min_year_val = d3.min(this.all_years)
 		this.min_year_data = this.grouped_by_year.get(this.min_year_val)
 		this.chart = create_chart(this.graph_width, this.graph_height, this.margins)
+		this.attr = attr
+		this.y_axis_prop = attr.property_name
+		this.zero_line_endpoints = {start: point(0,0), end: point(0,0)}
 		this.setup_xaxis(200, 20)
 		this.setup_yaxis()
 		this.setup_data_points()
@@ -47,13 +50,21 @@ Chart.prototype = {
 		var axis = d3.axisLeft(scale)
 		var mapper = (item) => scale(item[this.y_axis_prop])
 		this.yaxis = {axis, scale, mapper}
-		this.chart.append("g")
+		this.chart
+			.append("g")
 			.attr("class", "y-axis")
+			.call(axis)
+		this.chart
+			.selectAll(".zero-line")
+			.data([this.zero_line_endpoints])
+			.enter()
+			.append("path")
+				.attr("class", "zero-line hidden")
 	},
 	setup_data_points: function () {
 		var obj = this
 		this.chart
-			.selectAll("circle")
+			.selectAll("circle.point")
 			.data(this.data)
 			.enter()
 			.append("circle")
@@ -63,6 +74,7 @@ Chart.prototype = {
 				.on("mouseout", function({id:team_id}) { 
 					obj.change_team_state(obj, team_id, false) 
 				})
+				.attr("class", "point")
 		this.chart
 			.selectAll(".links")
 			.data(this.grouped_by_team.values())
@@ -77,10 +89,11 @@ Chart.prototype = {
 			.data(this.sorted_min_year_data())
 			.enter()
 			.append("text")
-				.attr("class", ({team_id}) => team_id + " team-name")
-				.attr("x", this.graph_width/2)
-				.attr("y", this.margins.top*3)
-				.text(({team_name}) => team_name)
+				.attr("class", ({id}) => id + " team-name")
+				.attr("x", this.graph_width/3.5)
+				.attr("y", this.margins.top)
+				.style("text-anchor", "start")
+				.text(({name}) => name)
 	},
 	setup_team_ids: function () {
 		var that = this
@@ -106,21 +119,38 @@ Chart.prototype = {
 				.attr("class", ({team_id}) => team_id + " first-link")
 	},
 	activate_winners: function () { 
-		d3.selectAll(".ws-winner")
+		d3.selectAll("circle.point.ws-winner")
 		.moveToFront() 
 	},
 	rescale_yaxis: function (top_padding=20, bottom_padding=20) {
-		var accessor_func = (d) => d[this.y_axis_prop]
+		var y_axis_prop = this.y_axis_prop
+		var attr = this.attr
+		var accessor_func = (d) => d[y_axis_prop]
 		var [min_val, max_val] = d3.extent(this.data, accessor_func)
+		var range = max_val - min_val
 		this.yaxis
 			.scale
-			.domain([ min_val - bottom_padding*min_val/100.0, max_val + top_padding*max_val/100.0])
-			.range([this.graph_height, 0])
-		this.chart.select(".y-axis")
+			.domain([ min_val - bottom_padding*Math.abs(range)/100.0, max_val + top_padding*max_val/100.0])
+		line = d3.line().x(({x}) => x).y(({y}) => y)
+		this.zero_line_endpoints.start = point(0, this.yaxis.scale(0.0))
+		this.zero_line_endpoints.end = point(this.graph_width, this.yaxis.scale(0.0))
+		this.chart
+			.selectAll(".average-text")
+			.attr("x", this.zero_line_endpoints.start.x + 5)
+			.attr("y", this.zero_line_endpoints.start.y + 15)
+			.attr("class", "average-text " + (this.attr.draw_zero_line ? "" : "hidden"))
+			.text(this.attr.zero_line_label)
+		this.chart
+			.selectAll(".zero-line")
+			.data([this.zero_line_endpoints])
+			.attr("d", ({start, end}) => line([start, end]))
+			.attr("class", "zero-line " + (this.attr.draw_zero_line ? "" : "hidden"))
+
+		this.chart.selectAll(".y-axis")
 				.transition()
 				.duration(1500)
-				.ease(d3.easeSinInOut)
-				.call(this.yaxis.axis);
+				.ease(d3.easeCircleInOut)
+				.call(this.yaxis.axis.tickFormat(attr.formatter));
 	},
 	update_data_points: function () {
 		var obj = this
@@ -132,7 +162,7 @@ Chart.prototype = {
 			.attr("d", (d) => point_to_point_link_generator(d))
 			.call(this.activate_winners)
 		this.chart
-			.selectAll("circle")
+			.selectAll("circle.point")
 			.data(this.data)
 			.transition()
 			.duration(300)
@@ -143,15 +173,15 @@ Chart.prototype = {
 	},
 	update_title: function (title) {
 		this.chart.select(".title")
-			.text(title)
+			.text(this.attr.title)
 	},
 	update_ylab: function (ylab) {
 		this.chart.select(".y-axis.label")
-			.text(ylab)
+			.text(this.attr.ylab)
 	},
 	update_yunitlab: function (yunit) {
 		this.chart.select(".y-axis.unit")
-			.text(yunit)
+			.text(this.attr.unit)
 	},
 	update_team_ids: function () {
 		var that = this
@@ -185,17 +215,21 @@ Chart.prototype = {
 			.attr("d", ({location, first_point_location}) => team_id_first_point_link_generator([location, first_point_location]))
 			.attr("class", ({team_id}) => team_id + " first-link")
 	},
+	update_zero_line: function () {
+		
+	},
 	render: function (attr) {
 		this.y_axis_prop = attr.property_name
+		this.attr = attr
 		this.rescale_yaxis()
-		this.update_title(attr.title)
-		this.update_ylab(attr.ylab)
-		// this.update_yunitlab(attr.unit)
+		this.update_title()
+		this.update_ylab()
+		this.update_yunitlab()
 		this.update_data_points()
 		this.update_team_ids()
 	}
 }
 
-window.Chart.create = function (data) {
-	return new Chart(data)
+window.Chart.create = function (data, attr) {
+	return new Chart(data, attr)
 }
