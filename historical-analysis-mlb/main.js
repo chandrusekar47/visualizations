@@ -33,6 +33,9 @@ $(() => {
 	})
 
 	Data.fetch((data) => {
+		if (typeof data == "string") {
+			data = JSON.parse(data)
+		}
 		window.all_data = data
 		chart = Chart.create(data.data, y_axis_attributes[property_name], data.ws_wins)
 		chart.render(y_axis_attributes[property_name])
