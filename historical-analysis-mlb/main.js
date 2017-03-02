@@ -7,11 +7,11 @@ $(() => {
 		"wins": attr("Number of wins for teams from 2000-2015", "Number of wins", "wins"),
 		"attendance": attr("Home attendance of teams from 2000-2015", "Home attendance", "attendance", "million", million_formatter),
 		"avg_salary": attr("Average salary of teams from 2000-2015", "Avg. Salary", "avg_salary", "million USD", million_formatter),
-		"z_batting_avg": attr("Batting average for teams from  2000-2015", "Normalized Batting average", "z_batting_avg", undefined, undefined, true),
-		"z_era": attr("Earned run average for teams from 2000-2015", "Normalized Earned run average", "z_era", undefined, undefined, true),
-		"z_wins": attr("Number of wins for teams from 2000-2015", "Normalized Number of wins", "z_wins", undefined, undefined, true),
-		"z_attendance": attr("Home attendance of teams from 2000-2015", "Normalized Home attendance", "z_attendance", undefined, undefined, true),
-		"z_avg_salary": attr("Average salary of teams from 2000-2015", "Normalized Avg. Salary", "z_avg_salary", undefined, undefined, true)
+		"z_batting_avg": attr("Batting average for teams from  2000-2015", "Normalized Batting average", "z_batting_avg", "No of Std Dev from average", undefined, true),
+		"z_era": attr("Earned run average for teams from 2000-2015", "Normalized Earned run average", "z_era", "No of Std Dev from average", undefined, true),
+		"z_wins": attr("Number of wins for teams from 2000-2015", "Normalized Number of wins", "z_wins", "No of Std Dev from average", undefined, true),
+		"z_attendance": attr("Home attendance of teams from 2000-2015", "Normalized Home attendance", "z_attendance", "No of Std Dev from average", undefined, true),
+		"z_avg_salary": attr("Average salary of teams from 2000-2015", "Normalized Avg. Salary", "z_avg_salary", "No of Std Dev from average", undefined, true)
 	}
 	var current_attribute = "batting_avg"
 	var property_name = current_attribute
@@ -34,7 +34,7 @@ $(() => {
 
 	Data.fetch((data) => {
 		window.all_data = data
-		chart = Chart.create(data, y_axis_attributes[property_name])
+		chart = Chart.create(data.data, y_axis_attributes[property_name], data.ws_wins)
 		chart.render(y_axis_attributes[property_name])
 	})
 });

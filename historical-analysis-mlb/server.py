@@ -100,9 +100,17 @@ for year, records in grouped_by_year.iteritems():
 		record["z_attendance"] = z_scores_attendance[i]
 		record["z_era"] = z_scores_era[i]
 
+teams_ws_wins = []
+
+for team_id, records in teams_by_franchise_id.iteritems():
+	teams_ws_wins.append({
+		"team_id": team_id,
+		"no_of_ws_wins": (np.array(pluck("WSWin", records)) == 'Y').sum()
+	});
+
 target_file = open("summary.json", "w")
 target_file.truncate()
-target_file.write(json.dumps(flat_franchise_year))
+target_file.write(json.dumps({"data": flat_franchise_year, "ws_wins": teams_ws_wins}))
 target_file.close()
 
 Handler = SimpleHTTPServer.SimpleHTTPRequestHandler

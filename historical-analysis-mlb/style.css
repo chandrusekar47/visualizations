@@ -33,7 +33,7 @@ body {
 	fill: rgba(15, 15, 15, 0.72);
 }
 
-.unit, .average-text, .legend text {
+.unit, .average-text, .legend text, .normal-text {
 	font-size: 1em;
 	font-weight: bold;
 	font-family: 'Open Sans', sans-serif;
@@ -129,12 +129,12 @@ circle.point.active.ws-winner {
 
 .team-id {
 	transform: translate(-50px, 3px);
-	fill: rgba(199, 149, 149, 0.29);
+	fill: rgba(199, 149, 149, 0.75);
 	font-size: 1em;
 	font-weight: normal;
 }
 .team-id.active {
-	fill: rgba(0,0,0, 0.95);
+	fill: rgba(0,0,0, 1.0);
 	font-size: 1.3em;
 	font-weight: bold;
 }
@@ -154,4 +154,25 @@ circle.point.active.ws-winner {
 
 .legend rect {
 	fill: none;
+}
+
+.team-id-axis.normal-text {
+	fill: rgba(15, 15, 15, 0.4);
+}
+
+.team-id-arrow {
+	fill: rgba(15, 15, 15, 0.4);
+	stroke: rgba(15, 15, 15, 0.4);
+	opacity: 1;
+	stroke-dasharray: 5,1;
+}
+
+#arrow {
+	fill: rgba(15, 15, 15, 0.6);
+}
+
+.team-id-axis.title {
+	font-weight: normal;
+	font-size: 1em;
+	fill: rgba(15, 15, 15, 0.4);
 }

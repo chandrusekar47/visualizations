@@ -1,5 +1,5 @@
 window.Chart = (() => {
-	return function(all_data, attr, width, height, margins) {
+	return function(all_data, attr, win_counts, width, height, margins) {
 		this.margins = margins || {top: 50, right: 30, bottom: 100, left: 120};
 		this.graph_width = width || 1280
 		this.graph_height = height || 800
@@ -14,6 +14,7 @@ window.Chart = (() => {
 		this.attr = attr
 		this.y_axis_prop = attr.property_name
 		this.zero_line_endpoints = {start: point(0,0), end: point(0,0)}
+		this.win_counts = win_counts.sort((x,y) => y.no_of_ws_wins - x.no_of_ws_wins)
 		this.setup_xaxis(200, 20)
 		this.setup_yaxis()
 		this.setup_data_points()
@@ -44,6 +45,9 @@ Chart.prototype = {
 			.attr("class", "x-axis")
 			.attr("transform", "translate(0, " + this.graph_height+ ")")
 			.call(axis)
+		this.chart
+			.selectAll(".label.x-axis")
+			.text("Year")
 	},
 	setup_yaxis: function() {
 		var scale = d3.scaleLinear().range([this.graph_height, 0])
@@ -75,6 +79,7 @@ Chart.prototype = {
 					obj.change_team_state(obj, team_id, false) 
 				})
 				.attr("class", "point")
+			.call(this.activate_winners)
 		this.chart
 			.selectAll(".links")
 			.data(this.grouped_by_team.values())
@@ -83,6 +88,7 @@ Chart.prototype = {
 				.attr("class", ([{id:team_id}, ]) => team_id + " links")
 				.on("mouseover", function ([{id:team_id}, ]) { obj.change_team_state(obj, team_id, true) })
 				.on("mouseout", function ([{id:team_id}, ]) { obj.change_team_state(obj, team_id, false) })
+			.call(this.activate_winners)
 	},
 	setup_team_names: function () {
 		this.chart.selectAll("text.team-name")
@@ -97,7 +103,7 @@ Chart.prototype = {
 	},
 	setup_team_ids: function () {
 		var that = this
-		this.team_id_labels = this.grouped_by_team.keys().map((team_id) => { return {team_id: team_id, location: point(0,0), first_point_location: point(0,0) }})
+		this.team_id_labels = this.win_counts.map(({team_id}) => { return {team_id: team_id, location: point(0,0), first_point_location: point(0,0) }})
 		this.chart
 			.selectAll("text.team-id")
 			.data(this.team_id_labels)
@@ -117,6 +123,32 @@ Chart.prototype = {
 			.append("path")
 				.attr("d", ({location, first_point_location}) => team_id_first_point_link_generator([location, first_point_location]))
 				.attr("class", ({team_id}) => team_id + " first-link")
+		this.char
+		this.chart
+			.append("path")
+				.attr("d", "M 90 10 V 750")
+				.attr("marker-end", "url(#arrow)")
+				.attr("class", "team-id-arrow")
+		this.chart.append("text")
+			.attr("transform", "rotate(-90)")
+			.attr("class", "team-id-axis normal-text")
+			.attr("x", -230)
+			.attr("y", 80)
+			.style("text-anchor", "start")
+			.text("More world series wins")
+		this.chart.append("text")
+			.attr("transform", "rotate(-90)")
+			.attr("class", "team-id-axis normal-text")
+			.attr("x", -680)
+			.attr("y", 80)
+			.style("text-anchor", "start")
+			.text("Less world series wins")
+		this.chart.append("text")
+			.attr("class", "team-id-axis title")
+			.attr("x", 100)
+			.attr("y", 9)
+			.style("text-anchor", "start")
+			.text("Team ID")
 	},
 	activate_winners: function () { 
 		d3.selectAll("circle.point.ws-winner")
@@ -185,16 +217,17 @@ Chart.prototype = {
 	},
 	update_team_ids: function () {
 		var that = this
-		var ordered_min_year_data = this.sorted_min_year_data()
-		var number_of_teams = ordered_min_year_data.length
+		var ordered_win_counts = this.win_counts
+		var ordered_first_column_data = this.sorted_min_year_data()
+		var number_of_teams = ordered_win_counts.length
 		var team_id_right_padding = 50
 		var team_id_height = 25
 		var locations_of_team_ids = {}
-		ordered_min_year_data.forEach((d, i) => {
-			locations_of_team_ids[d.id] = point(that.xaxis.scale(that.min_year_val) - team_id_right_padding, that.graph_height/2 + (i-number_of_teams/2)*team_id_height)
+		ordered_win_counts.forEach(({team_id}, i) => {
+			locations_of_team_ids[team_id] = point(that.xaxis.scale(that.min_year_val) - team_id_right_padding, that.graph_height/2 + (i-number_of_teams/2)*team_id_height)
 		})
 		var first_column_points = {}
-		ordered_min_year_data.forEach((d) => {
+		ordered_first_column_data.forEach((d) => {
 			first_column_points[d.id] = point(that.xaxis.scale(d.year), that.yaxis.scale(d[that.y_axis_prop]))
 		})
 		var team_id_first_point_link_generator =  d3.line().x((d) => d.x).y((d) => d.y)
@@ -230,6 +263,6 @@ Chart.prototype = {
 	}
 }
 
-window.Chart.create = function (data, attr) {
-	return new Chart(data, attr)
+window.Chart.create = function (data, attr, win_counts) {
+	return new Chart(data, attr, win_counts)
 }
