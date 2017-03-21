@@ -1,0 +1,5 @@
+Run the following command in the directory that has network, scatter and death_share_correlation folders
+
+python -m SimpleHTTPServer
+
+Open the browser and access the visualizations at localhost:8000
