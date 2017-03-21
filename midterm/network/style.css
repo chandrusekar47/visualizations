@@ -4,25 +4,29 @@
 }
 
 h2, h4{
-  text-align: center;
   font-weight: 200;
 }
 
-ul {
+ul.legend {
   list-style-type: none;
   margin: 0;
   padding: 0;
-  text-align: center;
 }
 
-li {
-  width: 250px;
+.align-box {
+  width: 60%;
+  margin: auto;
+  text-align: left;
+}
+
+ul.legend li {
   text-align: left;
   margin: auto;
   position: relative;
+  right: -20px;
 }
 
-li.death:before {
+ul.legend li.death:before {
   content: ' ';
   position: relative;
   left: -20px;
@@ -33,7 +37,7 @@ li.death:before {
   vertical-align: middle;
 }
 
-li.birth:before {
+ul.legend li.birth:before {
   content: ' ';
   position: relative;
   left: -20px;
