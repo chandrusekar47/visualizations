@@ -72,28 +72,6 @@ function create_chart (width, height, margins) {
 	var padding = 20
 	var circle_radius = 10
 
-	var legend_box = chart.append("g")
-			.attr("class","legend")
-
-	legend_box
-			.append("rect")
-				.attr("width", legend_width)
-				.attr("height", legend_height)
-				.attr("x", legend_tl_x)
-				.attr("y", legend_tl_y)
-	legend_box
-			.append("circle")
-				.attr('cx', legend_tl_x + padding)
-				.attr('cy', legend_tl_y + legend_height/2)
-				.attr('r', circle_radius)
-				.attr("class", "legend-point ws-winner")
-	legend_box
-			.append("text")
-			.attr("x", legend_tl_x + padding + circle_radius + padding/3)
-			.attr("y", legend_tl_y + legend_height/2 + 5)
-			.text("- World series winner")
-
-
 	chart.append("defs")
 			.append("marker")
 			.attr("id", "arrow")

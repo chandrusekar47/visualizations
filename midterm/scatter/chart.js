@@ -1,11 +1,11 @@
 window.Chart = (() => {
 	return function(all_data, attr, width, height, margins) {
 		this.margins = margins || {top: 50, right: 30, bottom: 100, left: 120};
-		this.graph_width = width || 1280
+		this.graph_width = width || 1380
 		this.graph_height = height || 800
 		this.data = all_data
 		this.continent_names = uniq(pluck("continent", all_data)).sort();
-		this.all_years = uniq(pluck("century", all_data)).sort();
+		this.all_years = uniq(pluck("century", all_data)).sort((a,b) => a-b);
 		this.last_anim_timeout_id = 0
 		this.grouped_by_continent = group_by_continent_sort_by_year(all_data)
 		this.grouped_by_year = group_by("century", all_data)
@@ -26,14 +26,13 @@ Chart.prototype = {
 	sorted_min_year_data: function () {
 		return this.min_year_data.sort((x,y) => y[this.y_axis_prop] - x[this.y_axis_prop])
 	},
-	change_continent_state: (chart, team_id, activate) => { 
-		chart.chart.selectAll("."+team_id).classed("active", activate)
+	change_continent_state: (chart, continent, activate) => { 
+		chart.chart.selectAll("."+continent.replace(/ /g, "_")).classed("active", activate)
 		clearTimeout(this.last_anim_timeout_id)
 		this.last_anim_timeout_id = window.setTimeout(() => {
-			d3.selectAll("."+team_id).moveToFront()
-			d3.selectAll("circle.point."+team_id).moveToFront()
+			d3.selectAll("."+continent.replace(/ /g, "_")).moveToFront()
+			d3.selectAll("circle.point."+continent.replace(/ /g, "_")).moveToFront()
 		}, 300)
-		if (!activate) chart.activate_winners()
 	},
 	setup_xaxis: function(left_padding, right_padding) {
 		var scale = d3.scalePoint().domain(this.all_years).range([left_padding, this.graph_width-right_padding])
@@ -77,7 +76,7 @@ Chart.prototype = {
 			.data(this.grouped_by_continent.values())
 			.enter()
 			.append("path")
-				.attr("class", ([{continent}, ]) => continent + " links")
+				.attr("class", ([{continent}, ]) => continent.replace(/ /g, "_") + " links")
 				.on("mouseover", function ([{continent}, ]) { obj.change_continent_state(obj, continent, true) })
 				.on("mouseout", function ([{continent}, ]) { obj.change_continent_state(obj, continent, false) })
 	},
@@ -89,12 +88,12 @@ Chart.prototype = {
 			.data(this.continent_locations)
 			.enter()
 			.append("text")
-				.attr("class", ({continent}) => continent + " continent-name")
+				.attr("class", ({continent}) => continent.replace(/ /g, "_") + " continent-name")
 				.attr("y", ({location}) => location.y)
 				.attr("x", ({location}) => location.x)
 				.text(({continent}) => continent)
-				.on("mouseover", function (continent) { that.change_continent_state(that, continent, true) })
-				.on("mouseout", function (continent) { that.change_continent_state(that, continent, false) })
+				.on("mouseover", function ({continent}) { that.change_continent_state(that, continent, true) })
+				.on("mouseout", function ({continent}) { that.change_continent_state(that, continent, false) })
 		var continent_name_first_point_link_generator =  d3.line().x((d) => d.x).y((d) => d.y)
 		this.chart
 			.selectAll("path.first-link")
@@ -102,7 +101,7 @@ Chart.prototype = {
 			.enter()
 			.append("path")
 				.attr("d", ({location, first_point_location}) => continent_name_first_point_link_generator([location, first_point_location]))
-				.attr("class", ({continent}) => continent + " first-link")
+				.attr("class", ({continent}) => continent.replace(/ /g, "_") + " first-link")
 	},
 	rescale_yaxis: function (top_padding=20, bottom_padding=20) {
 		var y_axis_prop = this.y_axis_prop
@@ -125,14 +124,14 @@ Chart.prototype = {
 		this.chart
 			.selectAll(".links")
 			.data(this.grouped_by_continent.values(), (x) => x[0]["continent"])
-			.attr("class", ([{continent}, ]) => continent + " links")
+			.attr("class", ([{continent}, ]) => continent.replace(/ /g, "_") + " links")
 			.attr("d", (d) => point_to_point_link_generator(d))
 		this.chart
 			.selectAll("circle.point")
 			.data(this.data, (x) => x["continent"] + "_" + x["century"])
 			.transition()
 			.duration(300)
-			.attr("class", ({continent}) => continent + " point")
+			.attr("class", ({continent}) => continent.replace(/ /g, "_") + " point")
 			.attr("cx", this.xaxis.mapper)
 			.attr("cy", this.yaxis.mapper)
 	},
@@ -153,15 +152,15 @@ Chart.prototype = {
 		var continent_names = this.continent_names
 		var ordered_first_column_data = this.sorted_min_year_data()
 		var number_of_continents = continent_names.length
-		var continent_right_padding = 50
-		var continent_height = 25
+		var continent_right_padding = 100
+		var continent_height = 30
 		var locations_of_continent = {}
 		continent_names.forEach((continent, i) => {
-			locations_of_continent[continent] = point(that.xaxis.scale(that.min_year_val) - continent_right_padding, that.graph_height/2 + (i-number_of_continents/2)*continent_height)
+			locations_of_continent[continent] = point(that.xaxis.scale(that.min_year_val) - continent_right_padding, 2*that.graph_height/3 + (i-number_of_continents/2)*continent_height)
 		})
 		var first_column_points = {}
 		ordered_first_column_data.forEach((d) => {
-			first_column_points[d.id] = point(that.xaxis.scale(d.century), that.yaxis.scale(d[that.y_axis_prop]))
+			first_column_points[d.continent] = point(that.xaxis.scale(d.century), that.yaxis.scale(d[that.y_axis_prop]))
 		})
 		var continent_name_first_point_link_generator =  d3.line().x((d) => d.x).y((d) => d.y)
 		this.continent_locations.forEach((d) => {
@@ -172,15 +171,17 @@ Chart.prototype = {
 		this.chart
 			.selectAll("text.continent-name")
 			.data(this.continent_locations)
-			.attr("class", ({continent}) => continent + " continent-name")
+			.attr("class", ({continent}) => continent.replace(/ /g, "_") + " continent-name")
 			.attr("y", ({location}) => location.y)
 			.attr("x", ({location}) => location.x)
 			.text(({continent}) => continent)
 
 		this.chart.selectAll("path.first-link")
 			.data(this.continent_locations)
-			.attr("d", ({location, first_point_location}) => continent_name_first_point_link_generator([location, first_point_location]))
-			.attr("class", ({continent}) => continent + " first-link")
+			.attr("d", (d) => {
+				return continent_name_first_point_link_generator([d.location, d.first_point_location])
+			})
+			.attr("class", ({continent}) => continent.replace(/ /g, "_") + " first-link")
 	},
 	render: function (attr) {
 		this.y_axis_prop = attr.property_name

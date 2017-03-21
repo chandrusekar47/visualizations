@@ -1,3 +1,9 @@
+d3.selection.prototype.moveToFront = function() {
+	return this.each(function(){
+		this.parentNode.appendChild(this)
+	})
+}
+
 function point (x, y) {return {x, y}}
 
 function dist (point, another_point) {
@@ -16,6 +22,28 @@ function create_arrow_marker(svgElement) {
 	svgElement.append("defs")
 		.append("marker")
 		.attr("id", "arrow")
+		.attr("viewBox", "0 0 10 10")
+		.attr("refX", 6)
+		.attr("refY", 6)
+		.attr("markerWidth", 6)
+		.attr("markerHeight", 6)
+		.attr("orient", "auto")
+		.append("path")
+			.attr("d", "M 0 0 L 10 5 L 0 10 z")
+	svgElement.append("defs")
+		.append("marker")
+		.attr("id", "arrow_active_in")
+		.attr("viewBox", "0 0 10 10")
+		.attr("refX", 6)
+		.attr("refY", 6)
+		.attr("markerWidth", 6)
+		.attr("markerHeight", 6)
+		.attr("orient", "auto")
+		.append("path")
+			.attr("d", "M 0 0 L 10 5 L 0 10 z")
+	svgElement.append("defs")
+		.append("marker")
+		.attr("id", "arrow_active_out")
 		.attr("viewBox", "0 0 10 10")
 		.attr("refX", 6)
 		.attr("refY", 6)
