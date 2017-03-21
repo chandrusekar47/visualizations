@@ -1,0 +1,41 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Distribution of notable individuals across the world</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet">
+        <link rel="stylesheet" href="d3-tip.css"> 
+        <link rel="stylesheet" href="style.css"> 
+    </head>
+    <body>
+        <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        <div class="buttons-holder">
+            <h3>Choose attribute</h3>
+            <div class="data-choice">
+                <label for="radio-1"><input id="radio-1" type="radio" value="death_count" name="attribute" checked /> Death count</label>
+                <label for="radio-0"><input id="radio-0" type="radio" value="birth_count" name="attribute" /> Birth count</label>
+                <label for="radio-3"><input id="radio-3" type="radio" value="male_death_count" name="attribute" /> Male death count</label>
+                <label for="radio-2"><input id="radio-2" type="radio" value="male_birth_count" name="attribute" /> Male birth count</label>
+                <label for="radio-5"><input id="radio-5" type="radio" value="female_death_count" name="attribute" /> Female death count</label>
+                <label for="radio-4"><input id="radio-4" type="radio" value="female_birth_count" name="attribute" /> Female birth count</label>
+            </div>
+            <h3>Choose dataset</h3>
+            <div class="scale-choice">
+                <label for="radio-6"><input id="radio-6" type="radio" name="dataset" value="" checked /> ULAN</label>
+                <label for="radio-7"><input id="radio-7" type="radio" name="dataset" value="fb_" /> Freebase</label>
+            </div>
+        </div>
+
+        <script  src="jquery.js"></script>
+        <script src="d3.js"></script>
+        <script type="text/javascript" src="data.js"></script>
+        <script type="text/javascript" src="util.js"></script>
+        <script type="text/javascript" src="chart.js"></script>
+        <script type="text/javascript" src="main.js"></script>
+    </body>
+</html>
