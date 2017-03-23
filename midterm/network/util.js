@@ -57,3 +57,34 @@ function create_arrow_marker(svgElement) {
 function group_by(prop_name, array) {
 	return d3.nest().key((d) => d[prop_name]).map(array)
 }
+
+function node_to_link_mappings(nodes, links, attractors, radius, small_label_radius) {
+	var name_to_obj_mapping = {}
+	nodes.forEach((x) => {
+		if (attractors.indexOf(x.BLCountry) >= 0) {
+			x.is_attractor = true
+			x.radius = radius[attractors.indexOf(x.BLCountry)]
+		}
+		if (x.abs_diff <= small_label_radius) {
+			x.small_label = true
+		}
+		x.class_name = x.BLCountry.replace(/ /g, '_')
+		x.class_list = []
+		x.incoming_nodes = []
+		x.outgoing_nodes = []
+		name_to_obj_mapping[x.BLCountry] = x
+	})
+	links.forEach((link) => {
+		var source_class_name = link.BLCountry.replace(/ /g, '_')
+		var target_class_name = link.DLCountry.replace(/ /g, '_')
+		link.classes = "t_"+source_class_name + " " + "s_"+target_class_name
+		link.source = name_to_obj_mapping[link.BLCountry]
+		link.target = name_to_obj_mapping[link.DLCountry]
+		link.source.class_list.push("s_" + link.target.class_name)
+		link.target.class_list.push("t_" + link.source.class_name)
+	})
+	nodes.forEach((x) => {
+		x.classes = x.class_list.join(' ')
+		delete x.class_list
+	})
+}

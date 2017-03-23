@@ -8,19 +8,19 @@ window.Network = (() => {
 		return (d) => radius_calculator(d) + 13
 	}
 
-	var deactivate_all_nodes = function (clicked_node_class_name) {
-		var activated_node = $(".activated")
+	var deactivate_all_nodes = function (clicked_node_class_name, network_chart) {
+		var activated_node = $("#" + network_chart.chartId + " .activated")
 		var clicked_node_active_now = (activated_node.attr("class") || "").split(/\s+/).some((x) => x === clicked_node_class_name)
-		var currently_active_elements = $(".active")
-		$(".link.active").attr("marker-end", "url(#arrow)")
+		var currently_active_elements = $("#" + network_chart.chartId + " .active")
+		$("#" + network_chart.chartId + " .link.active").attr("marker-end", "url(#arrow)")
 		currently_active_elements.removeClass("in")
 		currently_active_elements.removeClass("out")
 		activated_node.removeClass("activated")
 		currently_active_elements.removeClass("active")
-		$(".subdued").removeClass("subdued")
+		$("#" + network_chart.chartId + " .subdued").removeClass("subdued")
 		return clicked_node_active_now
 	}
-	var Network = function (chartId, nodes, links, width, height, radius_range) {
+	var Network = function (chartId, nodes, links, width, height, radius_range, klass) {
 		this.left_padding = 100
 		this.right_padding = 100
 		this.top_padding = 100
@@ -37,6 +37,7 @@ window.Network = (() => {
 			.attr("id", chartId)
 			.attr("width", width)
 			.attr("height", height)
+			.attr("class", klass)
 		create_arrow_marker(this.chart)
 		this.simulation = d3.forceSimulation()
 			.force("center", d3.forceCenter(width / 2, height / 2))
@@ -85,7 +86,7 @@ window.Network = (() => {
 					.append("g")
 						.attr("class", (d)=>d.classes + " " + d.class_name+ " "+ " node-group")
 					.on("click", function (node) {
-						var is_node_already_active = deactivate_all_nodes(node.class_name)
+						var is_node_already_active = deactivate_all_nodes(node.class_name, obj)
 						var class_name = node.class_name
 						if (!is_node_already_active) {
 							obj.chart.selectAll(".t_"+class_name).classed("active out", true)

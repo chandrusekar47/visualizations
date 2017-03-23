@@ -10,7 +10,9 @@
     </head>
     <body>
         <div class="align-box">
-            <h2>Birth death flows of notable individuals in the 19th century</h2>
+            <h2 class="century-18 century-specific">Birth death flows of notable individuals in the 19th century</h2>
+            <h2 class="century-19 century-specific">Birth death flows of notable individuals in the 20th century</h2>
+            <h2 class="century-20 century-specific">Birth death flows of notable individuals in the 21st century</h2>
             <h4>Freebase dataset</h4>
             <div>
                 This visualization was designed to answer the following questions: <br/>
@@ -24,9 +26,9 @@
                     Click on a country to highlight its connected countries. (only country should be activated at a time)
                 </p>
                 Choose century:
-                <a href="#" style="font-weight: bold">19th Century</a>
-                <a href="index2.html">20th Century</a> 
-                <a href="index3.html">21st Century</a> 
+                <label for="input-0"><input type="radio" value="century-18" id="input-0" name="century" checked="checked" />19th Century</label>
+                <label for="input-1"><input type="radio" value="century-19" id="input-1" name="century"  />20th Century</label>
+                <label for="input-2"><input type="radio" value="century-20" id="input-2" name="century"  />21st Century</label>
             </div>
             <ul class="legend">
                 <li class="death">Death attractor</li>
