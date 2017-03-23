@@ -60,10 +60,15 @@ ul.legend li.birth:before {
   font-weight: normal;
 }
 
+.text-label.small.active, .text-label.medium.active {
+  opacity: 1.0;
+  font-weight: bold;
+}
+
 .text-label.attractor {
   opacity: 1;
   font-size: 1.1em;
-  font-weight: 400;
+  font-weight: bold;
 }
 
 .node-group text {

@@ -31,6 +31,7 @@ window.Network = (() => {
 		this.radius_calculator = gen_raidus_calculator(this.circle_radius_scale)
 		this.label_pos_calculator = gen_label_pos_calculator(this.radius_calculator)
 		this.chartId = chartId
+		this.focus_radius = 300
 		var obj = this
 		this.chart = d3.select("body")
 			.append("svg")
@@ -76,8 +77,8 @@ window.Network = (() => {
 				.data(links)
 				.enter()
 					.append("line")
-					.attr("marker-end", "url(#arrow)")
-					.attr("class", (d) => d.classes + " link")
+					.attr("marker-end", (d) => d.source === d.target ? "" : "url(#arrow)")
+					.attr("class", (d) => d.source === d.target ? "" : (d.classes + " link"))
 
 			this.node = this.chart
 				.selectAll("g.node-group")
@@ -86,15 +87,20 @@ window.Network = (() => {
 					.append("g")
 						.attr("class", (d)=>d.classes + " " + d.class_name+ " "+ " node-group")
 					.on("click", function (node) {
-						var is_node_already_active = deactivate_all_nodes(node.class_name, obj)
-						var class_name = node.class_name
-						if (!is_node_already_active) {
+						var already_active_node = obj.currently_active_node
+						if (already_active_node) {
+							deactivate_all_nodes(obj.currently_active_node.class_name, obj)
+							obj.currently_active_node = undefined
+						}
+						if (node !== already_active_node) {
+							var class_name = node.class_name
 							obj.chart.selectAll(".t_"+class_name).classed("active out", true)
 							obj.chart.selectAll(".s_"+class_name).classed("active in", true)
 							obj.chart.selectAll(".link.active.in").attr("marker-end", "url(#arrow_active_in)")
 							obj.chart.selectAll(".link.active.out").attr("marker-end", "url(#arrow_active_out)")
 							obj.chart.selectAll("."+class_name).classed("activated", true)
 							$("#"+obj.chartId +" :not(defs,marker,marker>path,.active,.activated)").addClass("subdued")
+							obj.currently_active_node = node
 						}
 					})
 			this.node

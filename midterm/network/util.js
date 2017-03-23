@@ -70,8 +70,8 @@ function node_to_link_mappings(nodes, links, attractors, radius, small_label_rad
 		}
 		x.class_name = x.BLCountry.replace(/ /g, '_')
 		x.class_list = []
-		x.incoming_nodes = []
-		x.outgoing_nodes = []
+		x.incoming_nodes = {}
+		x.outgoing_nodes = {}
 		name_to_obj_mapping[x.BLCountry] = x
 	})
 	links.forEach((link) => {
@@ -82,9 +82,16 @@ function node_to_link_mappings(nodes, links, attractors, radius, small_label_rad
 		link.target = name_to_obj_mapping[link.DLCountry]
 		link.source.class_list.push("s_" + link.target.class_name)
 		link.target.class_list.push("t_" + link.source.class_name)
+		if (link.BLCountry != link.DLCountry) {
+			link.target.incoming_nodes[link.source.BLCountry] = link.source
+			link.source.outgoing_nodes[link.target.BLCountry] = link.target
+		}
 	})
 	nodes.forEach((x) => {
 		x.classes = x.class_list.join(' ')
+		x.incoming_nodes_count = Object.keys(x.incoming_nodes).length
+		x.outgoing_nodes_count = Object.keys(x.outgoing_nodes).length
+		x.total_connected_count = x.incoming_nodes_count + x.outgoing_nodes_count
 		delete x.class_list
 	})
 }
