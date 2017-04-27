@@ -60,6 +60,8 @@ function group_by(prop_name, array) {
 
 function node_to_link_mappings(nodes, links, attractors, radius, small_label_radius) {
 	var name_to_obj_mapping = {}
+	var id_to_link_mapping = {}
+	var links_to_be_removed = []
 	nodes.forEach((x) => {
 		if (attractors.indexOf(x.BLCountry) >= 0) {
 			x.is_attractor = true
@@ -73,6 +75,18 @@ function node_to_link_mappings(nodes, links, attractors, radius, small_label_rad
 		x.incoming_nodes = {}
 		x.outgoing_nodes = {}
 		name_to_obj_mapping[x.BLCountry] = x
+	})
+	links.forEach((link) => {
+		var id=link.BLCountry + "_" + link.DLCountry
+		var reverse_id= link.DLCountry + "_" + link.BLCountry
+		id_to_link_mapping[id] = link
+		if (id_to_link_mapping[reverse_id]) {
+			links_to_be_removed.push(link)
+		}
+	})
+	console.log("removed: "+links_to_be_removed.length)
+	links_to_be_removed.forEach((x) => {
+		links.splice(links.indexOf(x), 1)
 	})
 	links.forEach((link) => {
 		var source_class_name = link.BLCountry.replace(/ /g, '_')
