@@ -2,3 +2,4 @@ node_modules
 historical-analysis-mlb/summary.json
 *.pdf
 *.zip
+*.json
