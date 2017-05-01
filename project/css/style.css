@@ -1,0 +1,240 @@
+html, body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	/*font-family: 'Source Sans Pro', sans-serif;*/
+	font-family: 'Open Sans', sans-serif;
+}
+
+#map-controls {
+	position:fixed;
+	top: 0;
+	height: 30px;
+	width: 100%;
+	background-color:#b0c5ca;
+	z-index: 9999;
+}
+
+#map-controls ul {
+	position:relative;
+	padding: 0;
+	margin: 0;
+	text-align:center;	
+}
+
+#map-controls ul li {
+	display: inline-block;
+	font-size: 15px;
+	font-weight: 200;
+	color: rgb(82, 85, 88);
+	cursor: pointer;
+}
+
+#map-controls ul li.active {
+	font-size: 20px;
+	font-weight: 400;
+	color: black;
+}
+
+#map {
+	margin:auto;
+	width: 100%;
+	height: 100%;
+	position: relative;
+}
+
+#graph-container {
+	padding: 15px;
+	z-index: 9998;
+	width: 800px;
+	position: fixed;
+	left: 0;
+	top: 0px;
+	padding-top: 35px;
+	background-color: white;
+	overflow-y: auto;
+	height: 100%;
+	display: none;
+}
+
+#graph-container h2 {
+	margin: 0;
+	margin-bottom: 5px;
+}
+
+#slider-container {
+	position: relative;
+}
+
+#close-button {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	background-color: transparent;
+	border: none;
+	padding: 0;
+	margin: 0;
+	cursor: pointer;
+}
+
+#close-button img {
+	width: 20px;
+	height: 20px;
+}
+
+#close-button:focus {
+	outline: none;
+}
+
+#slider-container .x-axis .domain {
+	stroke: rgba(0,0,0,0);
+}
+
+#slider-container .tick text {
+	font-size: 1.25em;
+	font-weight:bold;
+}
+
+#slider-container .x-axis .tick line {
+	stroke-width: 0.2%;
+}
+
+#slider-container .y-axis line, .y-axis path {
+	stroke: rgba(162, 162, 162, 0.58);
+}
+
+#slider-container .label {
+	font-size: 1.15em;
+	font-weight: bold;
+	font-family: 'Open Sans', sans-serif;
+	fill: rgba(15, 15, 15, 0.72);
+}
+
+.title {
+	font-family: 'Open Sans', sans-serif;
+	font-size: 2em;
+	font-weight: 300;
+}
+
+#slider-container .title {
+	font-family: 'Open Sans', sans-serif;
+	font-size: 1.3em;
+	font-weight: 300;
+}
+
+.links {
+	fill: none;
+	stroke-width: 4px;
+	stroke: rgba(171, 156, 156, 0.95);
+}
+
+circle.point, circle.legend-point {
+	fill: rgba(39, 43, 212, 0.5);
+	r: 5px;
+	stroke-width: 0px;
+	stroke: rgba(39, 43, 212, 0.5);
+}
+
+circle.point.active {
+	fill: rgba(2, 18, 90, 1);
+	stroke: rgba(2, 18, 90, 1);
+	stroke-width: 5px;
+	opacity: 1;
+}
+
+#hm-legend {
+	width: 100px;
+	position: fixed;
+	bottom: 0;
+	right: 0;
+}
+
+#hm-legend .minmax {
+	position: relative;
+}
+
+#min {
+	position: absolute;
+	left: 5px;
+}
+
+#max {
+	position: absolute;
+	right: 5px;
+}
+.header {
+    position: relative;
+}
+.webpage{
+	width: 900px;
+	margin: auto;
+}
+.webpage h2 {
+	font-weight: 100;
+	text-align:center;
+}
+
+.bar {
+	fill: #7b6969;
+	height: 20px;
+}
+
+
+
+#loading-indicator {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	z-index: 10000;
+	background-color: black;
+}
+
+.spinner {
+  margin: 100px auto;
+  width: 40px;
+  height: 40px;
+  position: relative;
+}
+
+.cube1, .cube2 {
+  background-color: #333;
+  width: 15px;
+  height: 15px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  
+  -webkit-animation: sk-cubemove 1.8s infinite ease-in-out;
+  animation: sk-cubemove 1.8s infinite ease-in-out;
+}
+
+.cube2 {
+  -webkit-animation-delay: -0.9s;
+  animation-delay: -0.9s;
+}
+
+@-webkit-keyframes sk-cubemove {
+  25% { -webkit-transform: translateX(42px) rotate(-90deg) scale(0.5) }
+  50% { -webkit-transform: translateX(42px) translateY(42px) rotate(-180deg) }
+  75% { -webkit-transform: translateX(0px) translateY(42px) rotate(-270deg) scale(0.5) }
+  100% { -webkit-transform: rotate(-360deg) }
+}
+
+@keyframes sk-cubemove {
+  25% { 
+    transform: translateX(42px) rotate(-90deg) scale(0.5);
+    -webkit-transform: translateX(42px) rotate(-90deg) scale(0.5);
+  } 50% { 
+    transform: translateX(42px) translateY(42px) rotate(-179deg);
+    -webkit-transform: translateX(42px) translateY(42px) rotate(-179deg);
+  } 50.1% { 
+    transform: translateX(42px) translateY(42px) rotate(-180deg);
+    -webkit-transform: translateX(42px) translateY(42px) rotate(-180deg);
+  } 75% { 
+    transform: translateX(0px) translateY(42px) rotate(-270deg) scale(0.5);
+    -webkit-transform: translateX(0px) translateY(42px) rotate(-270deg) scale(0.5);
+  } 100% { 
+    transform: rotate(-360deg);
+    -webkit-transform: rotate(-360deg);
+  }
+}

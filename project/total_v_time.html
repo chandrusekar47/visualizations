@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+   <head>
+	<svg width="960" height="500"></svg>
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+	
+	<style> 
+
+	
+	</style>
+	
+	
+   </head>
+
+
+<body>
+<script>
+
+
+// set the dimensions and margins of the graph
+var margin = {top: 50, right: 100, bottom: 100, left: 100},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+var x = d3.scaleLinear().range([0, width]);
+
+var y = d3.scaleLinear()
+    .rangeRound([height, 0]);
+
+var valueline = d3.line()
+    .x(function(d) { return x(d.year); })
+    .y(function(d) { return y(d.tot_attacks); });
+    
+// parse the date / time
+//var parseTime = d3.timeParse("%y");
+
+// append the svg obgect to the body of the page
+// appends a 'group' element to 'svg'
+// moves the 'group' element to the top left margin
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+
+// select country
+var thecountry = "Yemen"; 
+    
+graph(thecountry);    
+    
+    
+function graph(thecountry) {    
+
+d3.json("data/org_num_attacks.json", function(error, data) {
+  if (error) throw error;
+   	console.log(data);
+	
+ 	
+ 	// This sets up that data
+ 	var i; var len = data.length; var temp; data2 = [];	
+ 	data2[0] = new countryATTACKS(data[0].year,data[0].num_attacks);
+ 	
+	var k = 0;
+	console.log(data2[k].year);	
+ 	for(i = 1; i < len; i++) {
+ 		if(data2[k].year == data[i].year) {
+ 			data2[k].tot_attacks = data2[k].tot_attacks + data[i].num_attacks;
+ 		}
+ 		else {
+ 			k++;
+ 			data2[k] = new countryATTACKS(data[i].year,data[i].num_attacks);
+ 		}
+ 	}
+ 	
+ 	console.log(data2);
+
+  x.domain(d3.extent(data2, function(d) { return d.year; }));
+  y.domain([0, d3.max(data2, function(d) { return d.tot_attacks; })]);
+
+  // Add the valueline path.
+  svg.append("path")
+      .data([data2])
+      .attr("class", "line")
+      .attr("fill", "none")
+      .attr("stroke-width", 7)
+      .attr("stroke","steelblue")
+      .attr("d", valueline);
+
+  svg.append("text")             
+      .attr("transform", "translate(" + (width/2)  + " ," +  (height + 50) + ")")
+      .style("text-anchor", "middle")
+      .style("font-size","25px")
+      .text("Year");
+
+  svg.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 20 - margin.left)
+      .attr("x",0 - (height / 2))
+      .attr("dy", "1em")
+      .style("text-anchor", "middle")
+      .style("font-size","25px")
+      .text("Terror Attacks");  
+      
+ // Add title
+    svg.append("text")
+     	.attr("x", width/2)
+     	.attr("y",  - margin.top/2)
+        .attr("text-anchor","middle")
+     	.style("font-size","25px")
+     	.style("text-decoration","underline")
+      	.text("Total Number of Terror Attacks by All Organizations");	
+
+
+  // Add the X Axis
+  var xAxis = d3.axisBottom(x).tickFormat(d3.format("d"));
+  
+  
+  svg.append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+  // Add the Y Axis
+  svg.append("g")
+      .call(d3.axisLeft(y));
+});
+
+	function countryATTACKS(year,tot_attacks) {
+		this.year = year;
+		this.tot_attacks = tot_attacks;
+	} 
+
+} // end function
+
+</script>
+</body>
+</html>

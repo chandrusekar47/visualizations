@@ -3,3 +3,6 @@ historical-analysis-mlb/summary.json
 *.pdf
 *.zip
 *.json
+*.csv
+*.pdf
+project/exploratory_images
