@@ -14,7 +14,7 @@
     </head>
     <body>
         <!--[if lt IE 8]>
-            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a target="_blank" href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
 
         <h2>Analysis of Global Terrorism Dataset 1970-2015</h2>
@@ -23,30 +23,39 @@
         </p>
         <h3>The Team</h3>
         <ul>
-            <li><a href="https://www.linkedin.com/in/swaminathanchandrasekar/">Chandrasekar Swaminathan (.42)</a></li>
-            <li><a href="https://www.linkedin.com/in/brenton-hall-a1a067a2/">Brenton Hall (.2262)</a></li>
+            <li><a target="_blank" href="https://www.linkedin.com/in/swaminathanchandrasekar/">Chandrasekar Swaminathan (.42)</a></li>
+            <li><a target="_blank" href="https://www.linkedin.com/in/brenton-hall-a1a067a2/">Brenton Hall (.2262)</a></li>
         </ul>
         <h3>Dataset used</h3>
         <p>
-        The dataset is available as a part of a <a href="https://www.kaggle.com/START-UMD/gtd">Kaggle Challenge</a> and can be downloaded from <a href="globalterrorismdb_0616dist.csv">here</a>. Description about different fields in the dataset can be found in the GTD Codebook published <a href="http://start.umd.edu/gtd/downloads/Codebook.pdf">here.</a>.
+        The dataset is available as a part of a <a target="_blank" href="https://www.kaggle.com/START-UMD/gtd">Kaggle Challenge</a> and can be downloaded from <a target="_blank" href="globalterrorismdb_0616dist.csv">here</a>. Description about different fields in the dataset can be found in the GTD Codebook published <a target="_blank" href="http://start.umd.edu/gtd/downloads/Codebook.pdf">here.</a>.
         </p>
         <h3>Processed data</h3>
         <p>
-            The processed data files in JSON format can be accessed <a href="http://localhost:8000/data/">here</a>. Several barcharts were initially generated to understand a bit more about the dataset, they can be accessed <a href="exploratory_images/">here</a>
-        </p>
-        <h3>Interesting Patterns</h3>
-        <p>
-            
+            The processed data files in JSON format can be accessed <a target="_blank" href="http://localhost:8000/data/">here</a>. Several barcharts were initially generated to understand a bit more about the dataset, they can be accessed <a target="_blank" href="exploratory_images/">here</a>.
         </p>
         <h3>Visualizations</h3>
         The visualizations can be accessed here:
         <ul>
-    		<li><a href="Main_Organizations.html">Analysis of activities of notable terror organizations</a></li>
-            <li><a href="index.html">Heatmap of terrorist attacks across the world from 1970-2015</a></li>
+            <li><a target="_blank" href="Main_Organizations.html">Analysis of activities of notable terror organizations</a></li>
+            <li><a target="_blank" href="index.html">Heatmap of terrorist attacks across the world from 1970-2015</a></li>
+        </ul>
+        <h3>Interesting Patterns</h3>
+        The following patterns can be seen in the heatmap based visualization:
+        <ul>
+            <li>Increase in lone wolf attacks all over the USA in the last three years. <sup><a target="_blank" href="usa-2013.png">[1]</a> <a target="_blank" href="2014-usa.png">[2]</a> <a target="_blank" href="2015-usa.png">[3]</a></sup></li>
+            <li>Suspiciously low terrorist attacks in Iran and Saudi Arabia, even with all neighboring countries being involved in deep conflict. <sup><a target="_blank" href="iran-anomaly.png">[4]</a></sup></li>
+            <li>Growth and expansion of ISIL/ISIS starting in 2013.<sup><a target="_blank" href="isil-expansion.png">[5]</a></sup></li>
+            <li>Resurgence of the Irish Republican Army in UK and Ireland in recent years.</li>
         </ul>
         <h3>Software used</h3>
         <ul>
-            <li></li>
+            <li>R for data analysis and pre-processing</li>
+            <li>D3 for drawing barcharts, line graphs and scatter plots</li>
+            <li>Leaflet js for rendering the map layer and overlaying the country boundaries on top</li>
+            <li>heatmap.js to generate the heat map</li>
         </ul>
+        <h3>Source code</h3>
+        <p>The source code is available <a target="_blank" href="https://github.com/chandrusekar47/visualizations/tree/master/project">here</a>
     </body>
 </html>
