@@ -159,10 +159,10 @@ window.CountryGraphs = (() => {
 	}
 
 	function fetchData() {
-		$.when($.get('data/attacks_year_location.json'), 
-			$.get("data/country_year_stats.json"), 
-			$.get("data/org_country_year_stats.json"), 
-			$.get("data/country_year_attacktype.json")).done(function (response1, response2, response3, response4) {
+		$.when($.get({url:'data/attacks_year_location.json', dataType:'json'}), 
+			$.get({url:"data/country_year_stats.json", dataType:'json'}), 
+			$.get({url:"data/org_country_year_stats.json", dataType:'json'}), 
+			$.get({url:"data/country_year_attacktype.json", dataType:'json'})).done(function (response1, response2, response3, response4) {
 			var dataByYear = _.groupBy(response1[0], "year")
 			yearValues = _.keys(dataByYear)
 			countryTrendGraph._data = _.groupBy(response2[0], "country")
